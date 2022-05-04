@@ -1,5 +1,6 @@
 package HW6;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @AllArgsConstructor
@@ -10,6 +11,8 @@ import lombok.*;
 
 public class Temperature {
 
+    @JsonProperty(value = "Minimum")
     private Minimum minimum;
+    @JsonProperty(value = "Maximum")
     private Maximum maximum;
 }

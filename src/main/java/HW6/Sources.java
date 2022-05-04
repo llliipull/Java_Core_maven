@@ -1,5 +1,6 @@
 package HW6;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @AllArgsConstructor
@@ -10,5 +11,6 @@ import lombok.*;
 
 public class Sources {
 
+    @JsonProperty(value = "Source")
     private String source;
 }
