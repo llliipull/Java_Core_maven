@@ -3,15 +3,16 @@ package HW6;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.preemptive;
 
 public class Main {
     public static void main(String[] args) throws JsonProcessingException {
@@ -40,6 +41,23 @@ public class Main {
             System.out.println("В Ижевске " + dailyForecast.getDate() + " максимальная температура " +
                     dailyForecast.getTemperature().getMaximum().getValue() + " минимальная температура " +
                     dailyForecast.getTemperature().getMinimum().getValue());
+        }
+        //запись в базу
+        try  {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/weather_db", "root", "qwerty");
+            PreparedStatement statement = connection.prepareStatement("insert into weather (date, max_temp,min_temp) " +
+                    "values(?, ?, ?)");
+            for (DailyForecasts dailyForecast : dailyForecasts) {
+                statement.setString(1, dailyForecast.getDate());
+                statement.setInt(2, dailyForecast.getTemperature().getMaximum().getValue());
+                statement.setInt(3,   dailyForecast.getTemperature().getMinimum().getValue());
+                statement.addBatch();
+                statement.executeBatch();
+            }
+
+
+        } catch (SQLException e){
+            e.printStackTrace();
         }
 
     }
